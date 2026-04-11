@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 AI Video Generator
 
-## Getting Started
+一个智能视频生成器，将文字主题自动转化为精美的分镜视频。
 
-First, run the development server:
+![Demo](https://img.shields.io/badge/Status-Beta-blue)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+## ✨ 功能特性
+
+- **📝 智能扩写** - AI 自动扩写输入主题，丰富内容细节
+- **🎬 自动分镜** - AI 智能分析文本，生成专业分镜头
+- **🖼️ AI 画图** - 每个分镜自动生成匹配的图片背景
+- **🎥 视频合成** - FFmpeg 高质量合成 MP4 视频
+- **✏️ 分镜编辑** - 可视化编辑每个分镜的场景和文字
+- **📱 响应式设计** - 适配桌面端和移动端
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Node.js 18+
+- FFmpeg
+- OpenCode API Key（用于文本扩写和翻译）
+
+### 安装
+
+```bash
+# 克隆项目
+git clone https://github.com/anjohnlv/aev.git
+cd aev
+
+# 安装依赖
+npm install
+
+# 配置环境变量
+cp .env.example .env.local
+# 编辑 .env.local 填入你的 API Key
+```
+
+### 启动
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 配置
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+在 `.env.local` 中配置：
 
-## Learn More
+```env
+# OpenCode API（用于扩写和翻译）
+OPENCODE_API_KEY=your_api_key_here
 
-To learn more about Next.js, take a look at the following resources:
+# 视频提供商（slideshow 为本地模式）
+VIDEO_PROVIDER=slideshow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 每个分镜时长（秒）
+SLIDESHOW_SEC_PER_SLIDE=4
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📖 使用流程
 
-## Deploy on Vercel
+1. **输入主题** - 输入你想生成视频的主题
+2. **选择模式** - 选择"扩写并分镜"或"直接分镜"
+3. **编辑分镜** - 查看和调整 AI 生成的分镜
+4. **生成视频** - 点击生成，等待视频完成
+5. **下载分享** - 预览并下载生成的视频
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ 技术栈
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **框架**: Next.js 14 (App Router)
+- **样式**: Tailwind CSS
+- **AI 服务**: OpenCode API, AI Horde
+- **图片处理**: Sharp
+- **视频合成**: FFmpeg
+- **部署**: Vercel / GitHub Codespaces
+
+## 📄 License
+
+MIT License - 详见 [LICENSE](LICENSE)
