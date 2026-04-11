@@ -1,0 +1,8 @@
+node_modules
+.next
+public/generated-video
+.sisyphus
+.env.local
+.env
+*.log
+.DS_Store
