@@ -244,44 +244,44 @@ export default function Home() {
 
   const renderStepIndicator = () => {
     const steps = [
-      { num: 1, label: '输入主题' },
-      { num: 2, label: '分镜编辑' },
-      { num: 3, label: '生成视频' },
+      { num: 1, label: '输入' },
+      { num: 2, label: '分镜' },
+      { num: 3, label: '视频' },
     ];
 
     return (
-      <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center justify-center gap-3 mb-8">
         {steps.map((s, idx) => (
           <div key={s.num} className="flex items-center">
             {idx > 0 && (
               <div
-                className={`w-12 h-0.5 mr-2 ${
+                className={`w-8 sm:w-16 h-px transition-colors duration-300 ${
                   currentStep > s.num - 1
-                    ? 'bg-blue-600'
-                    : 'bg-gray-300'
+                    ? 'bg-[var(--accent-primary)]'
+                    : 'bg-[var(--border-subtle)]'
                 }`}
               />
             )}
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                currentStep === s.num
-                  ? 'bg-blue-600 text-white'
-                  : currentStep > s.num
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-300 text-gray-600'
-              }`}
-            >
-              {currentStep > s.num ? '✓' : s.num}
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  currentStep === s.num
+                    ? 'bg-[var(--accent-primary)] animate-pulse-glow scale-110'
+                    : currentStep > s.num
+                    ? 'bg-[var(--accent-primary)]'
+                    : 'bg-[var(--border-subtle)]'
+                }`}
+              />
+              <span
+                className={`text-xs hidden sm:block transition-colors duration-300 ${
+                  currentStep === s.num
+                    ? 'text-[var(--accent-primary)] font-medium'
+                    : 'text-[var(--text-muted)]'
+                }`}
+              >
+                {s.label}
+              </span>
             </div>
-            <span
-              className={`ml-2 text-sm hidden sm:inline ${
-                currentStep === s.num
-                  ? 'text-blue-600 font-medium'
-                  : 'text-gray-500'
-              }`}
-            >
-              {s.label}
-            </span>
           </div>
         ))}
       </div>
@@ -292,36 +292,53 @@ export default function Home() {
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-800">输入主题</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gradient font-[var(--font-display)]">
+            输入主题
+          </h2>
+          <p className="text-[var(--text-secondary)] mt-2 text-sm sm:text-base">
             输入故事主题或文案，AI 将为您扩写并设计分镜
           </p>
         </div>
 
-        <textarea
-          value={step1State.originalText}
-          onChange={(e) =>
-            setStep1State((prev) => ({ ...prev, originalText: e.target.value }))
-          }
-          placeholder="输入主题或故事..."
-          className="w-full h-40 p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={isLoadingStep2}
-        />
+        <div className="relative">
+          <textarea
+            value={step1State.originalText}
+            onChange={(e) =>
+              setStep1State((prev) => ({ ...prev, originalText: e.target.value }))
+            }
+            placeholder="在这里输入你的故事主题..."
+            className="input-field w-full h-48 resize-none text-base"
+            disabled={isLoadingStep2}
+            rows={6}
+          />
+          <div className="absolute bottom-3 right-3 text-xs text-[var(--text-muted)]">
+            {step1State.originalText.length}/500
+          </div>
+        </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <button
             onClick={() => goToStep2('expand')}
             disabled={!canProceedToStep2}
-            className="py-3 px-6 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-accent w-full flex items-center justify-center gap-2"
           >
-            {isLoadingStep2 ? '✨ 创作中...' : '扩写并分镜'}
+            {isLoadingStep2 ? (
+              <>
+                <span className="animate-spin">◐</span>
+                <span>创作中...</span>
+              </>
+            ) : (
+              <>
+                ✨ <span>扩写并分镜</span>
+              </>
+            )}
           </button>
           <button
             onClick={() => goToStep2('direct')}
             disabled={!canProceedToStep2}
-            className="py-3 px-6 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-secondary w-full flex items-center justify-center gap-2"
           >
-            {isLoadingStep2 ? '✨ 创作中...' : '直接分镜'}
+            🎬 <span>直接分镜</span>
           </button>
         </div>
       </div>
@@ -337,34 +354,36 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <button
             onClick={() => handleBack(1)}
-            className="text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-2 py-2"
           >
-            ← 上一步
+            ← <span className="hidden sm:inline">上一步</span>
           </button>
         </div>
 
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-800">分镜编辑</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gradient font-[var(--font-display)]">
+            分镜编辑
+          </h2>
+          <p className="text-[var(--text-secondary)] mt-2 text-sm sm:text-base">
             {isLoading ? '🤖 AI 正在设计精彩分镜...' : '编辑每个分镜的场景和文字描述'}
           </p>
         </div>
 
         {step1State.mode === 'expand' && step2State.expandedText && !isLoading && (
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
-            <div className="p-3 bg-gray-50">
-              <span className="font-medium text-gray-700">扩写结果</span>
+          <div className="glass-card">
+            <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+              <span className="font-medium text-[var(--text-primary)]">扩写结果</span>
             </div>
-            <div className="p-3 bg-white whitespace-pre-wrap text-sm text-gray-700">
+            <div className="p-4 whitespace-pre-wrap text-sm text-[var(--text-secondary)]">
               {step2State.expandedText}
             </div>
           </div>
         )}
 
         {isLoading ? (
-          <div className="p-8 border border-gray-200 rounded-lg bg-gray-50 text-center">
-            <div className="animate-spin text-4xl mb-4">⏳</div>
-            <p className="text-gray-500">
+          <div className="glass-card p-12 text-center">
+            <div className="text-5xl mb-4 animate-pulse-glow inline-block">🎬</div>
+            <p className="text-[var(--text-secondary)]">
               {step1State.mode === 'expand' ? '扩写并设计分镜中...' : '设计分镜中...'}
             </p>
           </div>
@@ -379,9 +398,9 @@ export default function Home() {
           <button
             onClick={goToStep3}
             disabled={!storyboard}
-            className="w-full py-3 px-6 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-accent w-full flex items-center justify-center gap-2"
           >
-            生成视频
+            🎥 <span>生成视频</span>
           </button>
         )}
       </div>
@@ -396,71 +415,78 @@ export default function Home() {
       <div className="space-y-6">
         <button
           onClick={() => handleBack(2)}
-          className="text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1"
+          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors flex items-center gap-2 py-2"
         >
-          ← 上一步
+          ← <span className="hidden sm:inline">上一步</span>
         </button>
 
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-800">生成视频</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gradient font-[var(--font-display)]">
+            生成视频
+          </h2>
+          <p className="text-[var(--text-secondary)] mt-2 text-sm sm:text-base">
             {isGenerating ? '视频生成中...' : videoUrl ? '生成完成' : '等待生成...'}
           </p>
         </div>
 
         {(isGenerating || p) && (
-          <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm text-gray-700 space-y-2">
-            <p className="font-medium text-gray-800">{p?.label || '准备中...'}</p>
+          <div className="glass-card px-4 py-4 space-y-3">
+            <p className="font-medium text-[var(--text-primary)]">{p?.label || '准备中...'}</p>
             {p?.percent != null ? (
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="progress-bar">
                 <div
-                  className="h-full bg-blue-600 transition-[width] duration-500 ease-out rounded-full"
+                  className="progress-bar-fill"
                   style={{ width: `${Math.min(100, Math.max(0, p.percent))}%` }}
                 />
               </div>
             ) : (
-              <div className="h-2 bg-gray-200 rounded-full overflow-hidden relative">
-                <div className="absolute inset-y-0 left-0 w-1/3 bg-blue-400 rounded-full animate-pulse" />
+              <div className="progress-bar relative">
+                <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[var(--accent-primary)] to-transparent rounded-full animate-pulse" />
               </div>
             )}
-            {p?.percent != null ? (
-              <p className="text-xs text-gray-500">进度 {p.percent}% · 已等待 {p?.elapsedSec || 0} 秒</p>
-            ) : (
-              <p className="text-xs text-gray-500">已等待 {p?.elapsedSec || 0} 秒</p>
-            )}
+            <p className="text-xs text-[var(--text-muted)]">
+              {p?.percent != null
+                ? `进度 ${p.percent}% · 已等待 ${p?.elapsedSec || 0} 秒`
+                : `已等待 ${p?.elapsedSec || 0} 秒`}
+            </p>
           </div>
         )}
 
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center min-h-[200px] flex items-center justify-center bg-gray-50">
+        <div className="glass-card aspect-video flex items-center justify-center min-h-[280px]">
           {isGenerating ? (
-            <div className="text-gray-400">
-              <div className="text-5xl mb-4 animate-pulse">🎬</div>
-              <p>正在为您打造精彩视频，请稍候...</p>
+            <div className="text-center">
+              <div className="text-6xl mb-4 animate-pulse-glow">🎬</div>
+              <p className="text-[var(--text-secondary)]">正在为您打造精彩视频，请稍候...</p>
             </div>
           ) : videoUrl ? (
-            <video src={videoUrl} controls className="max-w-full rounded" />
+            <video
+              src={videoUrl}
+              controls
+              className="w-full max-w-full rounded-lg"
+              playsInline
+            />
           ) : (
-            <div className="text-gray-400">
-              <div className="text-4xl mb-2">🌟</div>
+            <div className="text-center text-[var(--text-muted)]">
+              <div className="text-5xl mb-3">🌟</div>
               <p>准备就绪...</p>
             </div>
           )}
         </div>
 
         {videoUrl && !isGenerating && (
-          <div className="flex gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleRegenerate}
-              className="flex-1 py-3 px-6 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors"
+              className="btn-secondary flex items-center justify-center gap-2"
             >
-              重新生成
+              🔄 <span>重新生成</span>
             </button>
             <a
               href={videoUrl}
               download={`video-${Date.now()}.mp4`}
-              className="flex-1 py-3 px-6 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-center block"
+              className="btn-accent flex items-center justify-center gap-2 text-center"
             >
-              下载
+              ⬇️ <span>下载</span>
             </a>
           </div>
         )}
@@ -469,27 +495,29 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8 space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-gray-800 text-center">
-          AI 视频生成器
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="space-y-2 text-center mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold font-[var(--font-display)]">
+          <span className="text-gradient">AI 视频生成器</span>
         </h1>
-        <p className="text-gray-600 text-center">输入主题，AI自动生成视频</p>
+        <p className="text-[var(--text-secondary)] text-sm sm:text-base">
+          输入主题，AI自动生成视频
+        </p>
       </div>
 
       {renderStepIndicator()}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div className="alert-error">
           <div className="flex items-start gap-3">
-            <span className="text-red-500 text-xl">⚠️</span>
+            <span className="text-xl">⚠️</span>
             <div className="flex-1">
-              <p className="text-red-700 font-medium">出错了</p>
-              <p className="text-red-600 text-sm mt-1">{error}</p>
+              <p className="font-medium">出错了</p>
+              <p className="text-sm mt-1 opacity-80">{error}</p>
             </div>
             <button
               onClick={() => setError(null)}
-              className="text-red-400 hover:text-red-600"
+              className="p-1 hover:opacity-80"
             >
               ✕
             </button>
@@ -497,10 +525,12 @@ export default function Home() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        {currentStep === 1 && renderStep1()}
-        {currentStep === 2 && renderStep2()}
-        {currentStep === 3 && renderStep3()}
+      <div className="glass-card p-5 sm:p-8">
+        <div className="animate-fade-in">
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+          {currentStep === 3 && renderStep3()}
+        </div>
       </div>
     </div>
   );
@@ -546,39 +576,36 @@ function EditableStoryboardView({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <label className="text-sm text-blue-800 font-medium block mb-1">
+    <div className="space-y-4">
+      <div className="shot-card">
+        <label className="text-sm text-[var(--accent-primary)] font-medium block mb-2">
           主题
         </label>
         <input
           type="text"
           value={storyboard.summary}
           onChange={(e) => handleSummaryChange(e.target.value)}
-          className="w-full px-2 py-1 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-400"
+          className="input-field w-full"
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {shots.map((shot) => (
-          <div
-            key={shot.id}
-            className="p-3 border border-gray-200 rounded-lg bg-white"
-          >
+          <div key={shot.id} className="shot-card">
             <div className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 text-sm font-medium rounded-full flex items-center justify-center">
+              <span className="flex-shrink-0 w-8 h-8 bg-[var(--bg-tertiary)] text-[var(--accent-primary)] text-sm font-medium rounded-full flex items-center justify-center">
                 {shot.id}
               </span>
-              <div className="flex-1 min-w-0 space-y-2">
+              <div className="flex-1 min-w-0 space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs text-gray-500">
+                  <label className="text-xs text-[var(--text-muted)]">
                     场景描述
                   </label>
                   <button
                     onClick={() => handleDeleteShot(shot.id)}
-                    className="text-xs text-red-500 hover:text-red-700 px-2 py-0.5"
+                    className="text-xs text-red-400 hover:text-red-300 px-2 py-1 min-h-[36px]"
                   >
-                    删除
+                    🗑️ 删除
                   </button>
                 </div>
                 <textarea
@@ -587,10 +614,10 @@ function EditableStoryboardView({
                     handleShotChange(shot.id, 'scene', e.target.value)
                   }
                   rows={2}
-                  className="w-full px-2 py-1 text-sm border border-gray-200 rounded resize-none focus:outline-none focus:ring-1 focus:ring-gray-400"
+                  className="input-field w-full text-sm"
                 />
                 <div>
-                  <label className="text-xs text-gray-500 block mb-1">
+                  <label className="text-xs text-[var(--text-muted)] block mb-2">
                     显示文字
                   </label>
                   <textarea
@@ -599,7 +626,7 @@ function EditableStoryboardView({
                       handleShotChange(shot.id, 'text', e.target.value)
                     }
                     rows={2}
-                    className="w-full px-2 py-1 text-sm border border-gray-200 rounded resize-none focus:outline-none focus:ring-1 focus:ring-gray-400"
+                    className="input-field w-full text-sm"
                   />
                 </div>
               </div>
