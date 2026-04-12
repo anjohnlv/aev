@@ -30,13 +30,14 @@ async function translateToEnglish(text: string): Promise<string> {
   const trimmed = text.trim();
   if (!trimmed) return '';
 
-  // Check cache
   if (TRANSLATE_CACHE[trimmed]) {
     return TRANSLATE_CACHE[trimmed];
   }
 
+  const basicKeywords = extractKeywords(trimmed);
+  
   if (!OPENCODE_KEY) {
-    return trimmed; // No API key, use original
+    return basicKeywords;
   }
 
   try {
@@ -51,29 +52,59 @@ async function translateToEnglish(text: string): Promise<string> {
         messages: [
           {
             role: 'user',
-            content: `Translate the following Chinese text to English for AI image generation. Keep it concise (under 100 characters). Only output the English translation, nothing else.\n\nChinese: ${trimmed}`,
+            content: `Translate to English (just the translation, no explanation): ${trimmed}`,
           },
         ],
-        max_tokens: 200,
-        temperature: 0.3,
+        max_tokens: 100,
+        temperature: 0.1,
       }),
     });
 
     if (!response.ok) {
       console.warn('[translate] API failed:', response.status);
-      return trimmed;
+      return basicKeywords;
     }
 
     const data = await response.json();
-    const english = data.choices?.[0]?.message?.content?.trim() || trimmed;
+    let english = data.choices?.[0]?.message?.content?.trim();
+    
+    if (!english && data.choices?.[0]?.message?.reasoning) {
+      const reasoning = data.choices[0].message.reasoning;
+      const match = reasoning.match(/[""]([^""]+)[""]/);
+      english = match ? match[1] : reasoning.slice(0, 100);
+    }
+    
+    if (!english) {
+      return basicKeywords;
+    }
 
-    // Cache result
     TRANSLATE_CACHE[trimmed] = english;
     return english;
   } catch (err) {
     console.warn('[translate] Error:', err);
-    return trimmed;
+    return basicKeywords;
   }
+}
+
+function extractKeywords(text: string): string {
+  const keywords: Record<string, string> = {
+    '阳光': 'sunny', '月亮': 'moon', '星星': 'stars', '天空': 'sky',
+    '草地': 'grass', '花园': 'garden', '花': 'flower', '树': 'tree',
+    '猫': 'cat', '狗': 'dog', '鸟': 'bird', '蝴蝶': 'butterfly',
+    '人物': 'person', '女人': 'woman', '男人': 'man', '孩子': 'child',
+    '笑': 'smile', '快乐': 'happy', '美丽': 'beautiful', '可爱': 'cute',
+    '水': 'water', '海': 'sea', '山': 'mountain', '河': 'river',
+    '日出': 'sunrise', '日落': 'sunset', '森林': 'forest', '田野': 'field',
+  };
+  
+  let result = text;
+  for (const [cn, en] of Object.entries(keywords)) {
+    result = result.replace(new RegExp(cn, 'g'), en);
+  }
+  
+  result = result.replace(/[\u4e00-\u9fff]/g, ' ').replace(/\s+/g, ' ').trim();
+  
+  return result || text;
 }
 
 /** 提交异步生成任务到 AI Horde */
