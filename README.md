@@ -15,6 +15,12 @@
 - **✏️ 分镜编辑** - 可视化编辑每个分镜的场景和文字
 - **📱 响应式设计** - 适配桌面端和移动端
 
+## 🖼️ 快照
+<img width="451" height="930" alt="iShot_2026-04-12_22 19 50" src="https://github.com/user-attachments/assets/4866db5b-ba00-4fb2-becc-566a7f1dfa08" />
+<img width="448" height="932" alt="iShot_2026-04-12_22 23 50" src="https://github.com/user-attachments/assets/ed57ea87-9504-49a6-a602-0b90c89e4c1a" />
+<img width="450" height="932" alt="iShot_2026-04-12_22 24 00" src="https://github.com/user-attachments/assets/90125f83-d919-41d2-8329-21a8f9ab8b75" />
+<img width="451" height="933" alt="iShot_2026-04-12_22 11 32" src="https://github.com/user-attachments/assets/34aaf17a-4e6c-407d-9afa-96688fd4759f" />
+
 ## 🚀 快速开始
 
 ### 环境要求
